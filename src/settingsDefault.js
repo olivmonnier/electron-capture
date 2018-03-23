@@ -4,5 +4,8 @@ export default {
     height: 600,
     show: true
   },
-  signalServer: 'https://webrtc-stream-server.herokuapp.com/'
+  signalServer: 'https://webrtc-stream-server.herokuapp.com/',
+  server: {
+    port: 8080
+  }
 }
