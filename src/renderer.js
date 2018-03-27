@@ -1,51 +1,35 @@
-import { desktopCapturer, ipcRenderer } from 'electron';
+import { ipcRenderer } from 'electron';
 import io from 'socket.io-client';
 import SimplePeer from 'simple-peer';
+import { getSources, getUserMedia } from './utils/media';
 import settingsDefault from './settingsDefault';
 const Store = require('electron-store');
-const store = new Store({ defaults: settingsDefault })
-const socket = io(store.get('signalServer'))
+const store = new Store({ defaults: settingsDefault });
+const socket = io(store.get('signalServer'));
 
-ipcRenderer.on('sources', function () {
-  desktopCapturer.getSources({ types: ['window', 'screen'] }, (error, sources) => {
-    if (error) throw error;
+let stream, peer;
 
-    ipcRenderer.send('sources', sources)
-  })
-})
+getSources()
+  .then(sources => ipcRenderer.send('sources', sources));
 
-ipcRenderer.on('token', function() {
+socket.on('connect', function() {
   ipcRenderer.send('token', socket.id)
 })
-/*desktopCapturer.getSources({ types: ['window', 'screen'] }, (error, sources) => {
-  if (error) throw error
-  for (let i = 0; i < sources.length; ++i) {
-    if (sources[i].name === 'Electron') {
-      navigator.mediaDevices.getUserMedia({
-        audio: false,
-        video: {
-          mandatory: {
-            chromeMediaSource: 'desktop',
-            chromeMediaSourceId: sources[i].id,
-            minWidth: 1280,
-            maxWidth: 1280,
-            minHeight: 720,
-            maxHeight: 720
-          }
-        }
+
+socket.on('message', function(data) {
+  const { state, signal } = JSON.parse(data);
+
+  if (state === 'ready') {
+    getUserMedia()
+      .then(stream => {
+        peer = new SimplePeer({ initiator: true, stream });
+
+        peer.on('signal', signal => socket.emit('message', JSON.stringify({
+          state: 'connect',
+          signal
+        })))
       })
-        .then((stream) => handleStream(stream))
-        .catch((e) => handleError(e))
-    }
+  } else if (state === 'connect') {
+    peer.signal(signal)
   }
 })
-
-function handleStream(stream) {
-  const video = document.querySelector('video')
-  video.srcObject = stream
-  video.onloadedmetadata = (e) => video.play()
-}
-
-function handleError(e) {
-  console.log(e)
-}*/
