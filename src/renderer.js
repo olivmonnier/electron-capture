@@ -28,6 +28,10 @@ socket.on('message', function(data) {
           state: 'connect',
           signal
         })))
+
+        peer.on('close', () => {
+          peer.destroy()
+        })
       })
   } else if (state === 'connect') {
     peer.signal(signal)

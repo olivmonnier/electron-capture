@@ -17,26 +17,8 @@ export function getSources() {
 }
 
 export function getUserMedia(config = {}) {
-  const { width, height, source } = config;
-  
-  if (width) {
-    video.mandatory = Object.assign(video.mandatory, {
-      minWidth: width,
-      maxWidth: width
-    })
-  }
-
-  if (height) {
-    video.mandatory = Object.assign(video.mandatory, {
-      minHeight: height,
-      maxHeight: height
-    })
-  }
-
-  if (source) {
-    video.mandatory = Object.assign(video.mandatory, {
-      chromeMediaSourceId: source
-    })
+  if (config) {
+    video.mandatory = Object.assign(video.mandatory, config)
   }
 
   return navigator.mediaDevices.getUserMedia({ audio, video })
