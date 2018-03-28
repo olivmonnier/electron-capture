@@ -1,30 +1,26 @@
 import { ipcRenderer } from 'electron';
-import io from 'socket.io-client';
 import SimplePeer from 'simple-peer';
 import { getSources, getUserMedia } from './utils/media';
 import settingsDefault from './settingsDefault';
 const Store = require('electron-store');
 const store = new Store({ defaults: settingsDefault });
-const socket = io(store.get('signalServer'));
+const ws = new WebSocket(`ws://127.0.0.1:${store.get('server').port}`);
 
 let stream, peer;
 
 getSources()
   .then(sources => ipcRenderer.send('sources', sources));
 
-socket.on('connect', function() {
-  ipcRenderer.send('token', socket.id)
-})
-
-socket.on('message', function(data) {
-  const { state, signal } = JSON.parse(data);
+ws.onmessage = function(d) {
+  console.log(d)
+  const { state, signal } = JSON.parse(d.data);
 
   if (state === 'ready') {
     getUserMedia()
       .then(stream => {
         peer = new SimplePeer({ initiator: true, stream });
 
-        peer.on('signal', signal => socket.emit('message', JSON.stringify({
+        peer.on('signal', signal => ws.send(JSON.stringify({
           state: 'connect',
           signal
         })))
@@ -36,4 +32,4 @@ socket.on('message', function(data) {
   } else if (state === 'connect') {
     peer.signal(signal)
   }
-})
+}

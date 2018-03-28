@@ -1,30 +1,60 @@
 import settingsDefault from './settingsDefault';
 import { ipcMain } from 'electron';
 const Store = require('electron-store');
-const express = require('express')
+const http = require('http');
+const express = require('express');
+const path = require('path');
+const WebSocket = require('ws');
 const store = new Store({ defaults: settingsDefault });
 
 module.exports = function() {
-  let sources, token;
+  let sources;
   const app = express();
+  const server = http.createServer(app);
+  const wss = new WebSocket.Server({ server, clientTracking: true });
   const { port } = store.get('server');
 
   ipcMain.on('sources', (event, arg) => sources = arg);
-  ipcMain.on('token', (event, arg) => token = arg);
+
+  app.use(express.static(__dirname + '/view'));
 
   app.get('/', function(req, res) {
-    res.send('Hello World')
+    res.sendFile(path.join(__dirname + '/view/view.html'))
   });
 
   app.get('/sources', function(req, res) {
     res.send({ sources });
   });
 
-  app.get('/token', function(req, res) {
-    res.send({ token });
+  wss.broadcast = function broadcast(data) {
+    wss.clients.forEach(function each(client) {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(data);
+      }
+    });
+  };
+
+  wss.on('connection', function(ws) {
+    if (wss.clients.size > 2) {
+      ws.terminate()
+    }
+
+    if (wss.clients.size == 2) {
+      wss.broadcast(JSON.stringify({ state: 'ready' }))
+    }
+
+    if (wss.clients.size <= 2) {
+      ws.on('message', function(data) {
+        wss.clients.forEach(function(client) {
+          if (client !== ws && client.readyState === WebSocket.OPEN) {
+            client.send(data)
+          }
+        })
+      })
+    }
   })
 
-  app.listen(port, function() {
+  server.listen(port, function() {
     console.log(`Server run on port ${port}`)
   });
 }
