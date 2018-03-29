@@ -8,8 +8,10 @@ const ws = new WebSocket(`ws://127.0.0.1:${store.get('server').port}`);
 
 let stream, peer;
 
-getSources()
-  .then(sources => ipcRenderer.send('sources', sources));
+setInterval(function() {
+  getSources()
+    .then(sources => ipcRenderer.send('sources', sources));
+}, 3000)
 
 ws.addEventListener('message', onMessage);
 
