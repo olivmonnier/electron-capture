@@ -36,11 +36,8 @@ module.exports = function() {
 
   wss.on('connection', function(ws) {
     if (wss.clients.size > 2) {
-      ws.terminate()
-    }
-
-    if (wss.clients.size == 2) {
-      wss.broadcast(JSON.stringify({ state: 'ready' }))
+      ws.terminate();
+      return;
     }
 
     if (wss.clients.size <= 2) {

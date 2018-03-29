@@ -1,28 +1,26 @@
 import Peer from 'simple-peer';
-const ws = new WebSocket(`ws://127.0.0.1:8080`);
+const ws = new WebSocket(`ws://${window.location.host}`);
+const params = queryParameters();
 let peer;
 
-console.log('data')
-
+ws.addEventListener('open', onOpen)
 ws.addEventListener('message', onMessage)
 
-ws.addEventListener('open', function() {
-  ws.send('test');
-})
+function onOpen() {
+  peer = new Peer()
+  handlerPeer(peer, ws)
+  ws.send(JSON.stringify({
+    state: 'ready',
+    params
+  }))
+}
 
 function onMessage(data) {
   console.log('data', data)
 
   const { state, signal } = JSON.parse(data.data)
 
-  if (state === 'ready') {
-    if (peer && !peer.destroyed) {
-      peer.destroy()
-    }
-    peer = new Peer()
-    handlerPeer(peer, ws)
-  }
-  else if (state === 'connect') {
+  if (state === 'connect') {
     if (peer && peer.destroyed) {
       peer = new Peer()
       handlerPeer(peer, ws)
@@ -32,7 +30,7 @@ function onMessage(data) {
 }
 
 function handlerPeer(peer, socket) {
-  peer.on('signal', function (signal) {
+  peer.on('signal', signal => {
     socket.send(JSON.stringify({
       state: 'connect',
       signal
@@ -46,4 +44,8 @@ function handlerPeer(peer, socket) {
   peer.on('close', () => {
     peer.destroy()
   })
+}
+
+function queryParameters(str) {
+  return (str || document.location.search).replace(/(^\?)/, '').split("&").map(function (n) { return n = n.split("="), this[n[0]] = n[1], this }.bind({}))[0];
 }

@@ -1,7 +1,7 @@
 import { desktopCapturer } from 'electron';
 
-let audio = false;
-let video = {
+const audio = false;
+const videoConfig = {
   mandatory: {
     chromeMediaSource: 'desktop'
   }
@@ -17,9 +17,14 @@ export function getSources() {
 }
 
 export function getUserMedia(config = {}) {
-  if (config) {
-    video.mandatory = Object.assign(video.mandatory, config)
+  const { source } = config;
+  const video = Object.create(videoConfig)
+
+  if (source) {
+    video.mandatory = Object.assign({}, video.mandatory, {
+      chromeMediaSourceId: source
+    })
   }
 
-  return navigator.mediaDevices.getUserMedia({ audio, video })
+  return navigator.mediaDevices.getUserMedia({ audio, video  })
 }
