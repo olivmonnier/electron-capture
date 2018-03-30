@@ -1,4 +1,4 @@
-import settingsDefault from './settingsDefault';
+import settingsDefault from './utils/settingsDefault';
 import { ipcMain } from 'electron';
 const Store = require('electron-store');
 const http = require('http');

@@ -5,19 +5,30 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Debug Main Process",
       "type": "node",
       "request": "launch",
-      "name": "Electron Main",
-      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron-forge-vscode-nix",
+      "cwd": "${workspaceRoot}",
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
       "windows": {
-        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron-forge-vscode-win.cmd"
+        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
       },
-      // runtimeArgs will be passed directly to your Electron application
+      "program": "${workspaceRoot}/src/index.js",
+      "protocol": "inspector"
+    },
+    {
+      "name": "Debug Renderer Process",
+      "type": "chrome",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
+      "windows": {
+        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
+      },
       "runtimeArgs": [
-        "foo",
-        "bar"
+        "${workspaceRoot}/src/index.js",
+        "--remote-debugging-port=9222"
       ],
-      "cwd": "${workspaceRoot}"
+      "webRoot": "${workspaceRoot}"
     }
   ]
 }

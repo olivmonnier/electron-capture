@@ -2,7 +2,7 @@ export default {
   window: {
     width: 800,
     height: 600,
-    show: true
+    show: false
   },
   server: {
     port: 8080

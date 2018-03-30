@@ -1,8 +1,10 @@
-import { app, BrowserWindow } from 'electron';
-import settingsDefault from './settingsDefault';
+import { app, BrowserWindow, Tray, Menu } from 'electron';
+import settingsDefault from './utils/settingsDefault';
+const path = require('path');
 const Store = require('electron-store');
-
 const store = new Store({ defaults: settingsDefault });
+const iconPath = path.join(__dirname, 'icon.png');
+let appIcon = null;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -15,8 +17,10 @@ let mainWindow;
 
 const createWindow = () => {
   // Create the browser window.
-
-  mainWindow = new BrowserWindow(store.get('window'));
+  const windowConfig = Object.assign({}, store.get('window'), {
+    icon: iconPath
+  });
+  mainWindow = new BrowserWindow(windowConfig);
 
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/index.html`);
@@ -33,10 +37,32 @@ const createWindow = () => {
   });
 };
 
+const createTray = () => {
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: 'Edit config',
+      click: function() {
+        store.openInEditor()
+      }
+    },
+    {
+      label: 'Quit',
+      accelerator: 'Command+Q',
+      role: 'quit',
+    }
+  ]);
+  appIcon = new Tray(iconPath);
+  appIcon.setToolTip('Capture desktop');
+  appIcon.setContextMenu(contextMenu);
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', function() {
+  createWindow();
+  createTray();
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
