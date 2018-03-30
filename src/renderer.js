@@ -22,8 +22,10 @@ function onMessage(data) {
   if (state === 'ready') {
     getUserMedia(params)
       .then(stream => {
+        if (peer && !peer.destroyed) {
+          peer.destroy();
+        }
         peer = new SimplePeer({ initiator: true, stream });
-
         handlerPeer(peer, ws);
       })
   } else if (state === 'connect') {

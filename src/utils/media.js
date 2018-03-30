@@ -1,14 +1,19 @@
 import { desktopCapturer } from 'electron';
 
+const MAX_WIDTH = 1980;
+const MAX_HEIGHT = 1200;
+const MIN_WIDTH = 320;
+const MIN_HEIGHT = 180;
+const MAX_FRAMERATE = 60;
 const audio = false;
 const videoConfig = {
   mandatory: {
     chromeMediaSource: 'desktop',
-    maxWidth: 1980,
-    maxHeight: 1200,
-    minWidth: 320,
-    minHeight: 180,
-    maxFrameRate: 60
+    maxWidth: MAX_WIDTH,
+    maxHeight: MAX_HEIGHT,
+    minWidth: MIN_WIDTH,
+    minHeight: MIN_HEIGHT,
+    maxFrameRate: MAX_FRAMERATE
   }
 }
 
@@ -28,11 +33,11 @@ export function getUserMedia(config = {}) {
 
   if (source) mandatory['chromeMediaSourceId'] = source;
 
-  if (width) mandatory['maxWidth'] = width;
+  mandatory['maxWidth'] = (width) ? parseInt(width, 10) : MAX_WIDTH;
 
-  if (height) mandatory['maxHeight'] = height;
+  mandatory['maxHeight'] = (height) ? parseInt(height, 10) : MAX_HEIGHT;
 
-  if (framerate) mandatory['maxFrameRate'] = framerate
+  mandatory['maxFrameRate'] = (framerate) ? parseInt(framerate, 10) : MAX_FRAMERATE;
 
   return navigator.mediaDevices.getUserMedia({ 
     audio, 
