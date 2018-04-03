@@ -6,16 +6,6 @@ const MIN_WIDTH = 320;
 const MIN_HEIGHT = 180;
 const MAX_FRAMERATE = 60;
 const audio = false;
-const videoConfig = {
-  mandatory: {
-    chromeMediaSource: 'desktop',
-    maxWidth: MAX_WIDTH,
-    maxHeight: MAX_HEIGHT,
-    minWidth: MIN_WIDTH,
-    minHeight: MIN_HEIGHT,
-    maxFrameRate: MAX_FRAMERATE
-  }
-}
 
 export function getSources() {
   return new Promise((resolve, reject) => {
@@ -27,17 +17,13 @@ export function getSources() {
 }
 
 export function getUserMedia(config = {}) {
-  const { source, width, height, framerate } = config;
-  const video = Object.create(videoConfig)
+  const { source } = config;
+  const video = getVideoConfig();
   let { mandatory } = video;
 
-  if (source) mandatory['chromeMediaSourceId'] = source;
-
-  mandatory['maxWidth'] = (width) ? parseInt(width, 10) : MAX_WIDTH;
-
-  mandatory['maxHeight'] = (height) ? parseInt(height, 10) : MAX_HEIGHT;
-
-  mandatory['maxFrameRate'] = (framerate) ? parseInt(framerate, 10) : MAX_FRAMERATE;
+  if (source) {
+    mandatory['chromeMediaSourceId'] = source;
+  }
 
   return navigator.mediaDevices.getUserMedia({ 
     audio, 
@@ -45,4 +31,17 @@ export function getUserMedia(config = {}) {
       mandatory
     }
   })
+}
+
+function getVideoConfig() {
+  return {
+    mandatory: {
+      chromeMediaSource: 'desktop',
+      maxWidth: MAX_WIDTH,
+      maxHeight: MAX_HEIGHT,
+      minWidth: MIN_WIDTH,
+      minHeight: MIN_HEIGHT,
+      maxFrameRate: MAX_FRAMERATE
+    }
+  }
 }

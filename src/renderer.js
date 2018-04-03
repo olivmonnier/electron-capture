@@ -17,10 +17,10 @@ ws.addEventListener('message', onMessage);
 
 function onMessage(data) {
   console.log(data)
-  const { state, signal, params } = JSON.parse(data.data);
+  const { state, signal, params, source } = JSON.parse(data.data);
 
   if (state === 'ready') {
-    getUserMedia(params)
+    getUserMedia({ source, params })
       .then(stream => {
         if (peer && !peer.destroyed) {
           peer.destroy();

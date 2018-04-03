@@ -1,18 +1,18 @@
 import Peer from 'simple-peer';
+import { queryParameters } from '../utils/url';
+
 const ws = new WebSocket(`ws://${window.location.host}`);
-const params = queryParameters();
 let peer;
 
 ws.addEventListener('open', onOpen)
 ws.addEventListener('message', onMessage)
 
 function onOpen() {
-  peer = new Peer()
-  handlerPeer(peer, ws)
-  ws.send(JSON.stringify({
-    state: 'ready',
-    params
-  }))
+  const parameters = getParameters();
+
+  peer = new Peer();
+  handlerPeer(peer, ws);
+  ws.send(JSON.stringify(parameters));
 }
 
 function onMessage(data) {
@@ -46,6 +46,25 @@ function handlerPeer(peer, socket) {
   })
 }
 
-function queryParameters(str) {
-  return (str || document.location.search).replace(/(^\?)/, '').split("&").map(function (n) { return n = n.split("="), this[n[0]] = n[1], this }.bind({}))[0];
+function getSource() {
+  const path = window.location.pathname;
+
+  if (path !== '/') {
+    return path.replace('/', '');
+  }
+}
+
+function getParameters() {
+  let parameters;
+  const source = getSource();
+  const params = queryParameters();
+
+  parameters = {
+    state: 'ready',
+    params
+  }
+
+  if (source) parameters = Object.assign(parameters, { source });
+
+  return parameters;
 }

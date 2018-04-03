@@ -22,8 +22,12 @@ module.exports = function() {
     res.sendFile(path.join(__dirname + '/view/view.html'))
   });
 
-  app.get('/sources', function(req, res) {
+  app.get('/sources', function (req, res) {
     res.send({ sources });
+  });
+
+  app.get('/:id', function (req, res) {
+    res.sendFile(path.join(__dirname + '/view/view.html'))
   });
 
   wss.broadcast = function broadcast(data) {
