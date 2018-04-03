@@ -18,7 +18,7 @@ export function getUserMedia(config = {}) {
   const video = getVideoConfig();
   let { mandatory } = video;
 
-  if (source) {
+  if (source && source !== "vr") {
     mandatory['chromeMediaSourceId'] = source;
   }
 
