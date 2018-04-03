@@ -1,11 +1,8 @@
 import { desktopCapturer } from 'electron';
-
-const MAX_WIDTH = 1980;
-const MAX_HEIGHT = 1200;
-const MIN_WIDTH = 320;
-const MIN_HEIGHT = 180;
-const MAX_FRAMERATE = 60;
-const audio = false;
+import settingsDefault from './settingsDefault';
+const Store = require('electron-store');
+const store = new Store({ defaults: settingsDefault });
+const rtcConfig = store.get('rtc');
 
 export function getSources() {
   return new Promise((resolve, reject) => {
@@ -26,7 +23,7 @@ export function getUserMedia(config = {}) {
   }
 
   return navigator.mediaDevices.getUserMedia({ 
-    audio, 
+    audio: rtcConfig.audio, 
     video: {
       mandatory
     }
@@ -34,14 +31,12 @@ export function getUserMedia(config = {}) {
 }
 
 function getVideoConfig() {
+  const { maxWidth, maxHeight, minWidth, minHeight, maxFrameRate } = rtcConfig
+
   return {
     mandatory: {
       chromeMediaSource: 'desktop',
-      maxWidth: MAX_WIDTH,
-      maxHeight: MAX_HEIGHT,
-      minWidth: MIN_WIDTH,
-      minHeight: MIN_HEIGHT,
-      maxFrameRate: MAX_FRAMERATE
+      maxWidth, maxHeight, minWidth, minHeight, maxFrameRate
     }
   }
 }
