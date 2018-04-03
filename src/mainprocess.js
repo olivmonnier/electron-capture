@@ -19,15 +19,19 @@ module.exports = function() {
   app.use(express.static(__dirname + '/view'));
 
   app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname + '/view/view.html'))
+    res.sendFile(path.join(__dirname + '/view/index.html'))
   });
 
   app.get('/sources', function (req, res) {
     res.send({ sources });
   });
 
+  app.get('/vr', function(req, res) {
+    res.sendFile(path.join(__dirname + '/view/vr.html'))
+  })
+
   app.get('/:id', function (req, res) {
-    res.sendFile(path.join(__dirname + '/view/view.html'))
+    res.sendFile(path.join(__dirname + '/view/index.html'))
   });
 
   wss.broadcast = function broadcast(data) {

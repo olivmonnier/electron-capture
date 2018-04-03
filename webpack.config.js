@@ -4,10 +4,12 @@ const APP_DIR = join(__dirname, 'src/view')
 const BUILD_DIR = join(__dirname, 'src/view')
 
 module.exports = {
-  entry: join(APP_DIR, 'app.js'),
+  entry: {
+    app: join(APP_DIR, 'app.js')
+  },
   output: {
     path: BUILD_DIR,
-    filename: 'bundle.js'
+    filename: '[name].bundle.js'
   },
   module: {
     rules: [
