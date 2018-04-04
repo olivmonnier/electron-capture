@@ -23,10 +23,13 @@
         background: rgba(0, 0, 0, 0.25);
       }
     </style>
+    <script>
+      window.SOURCE = '<%- source %>';
+    </script>
   </head>
   <body>
     <video id="remoteVideos" controls></video>
 
-    <script src="app.bundle.js"></script>
+    <script src="/app.bundle.js"></script>
   </body>
 </html>

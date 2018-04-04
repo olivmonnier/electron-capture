@@ -1,7 +1,7 @@
 
 const { join } = require('path')
-const APP_DIR = join(__dirname, 'src/view')
-const BUILD_DIR = join(__dirname, 'src/view')
+const APP_DIR = join(__dirname, 'src/view/public')
+const BUILD_DIR = join(__dirname, 'src/view/public')
 
 module.exports = {
   entry: {

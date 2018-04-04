@@ -1,5 +1,5 @@
 import Peer from 'simple-peer';
-import { queryParameters } from '../utils/url';
+import { queryParameters } from '../../utils/url';
 
 const ws = new WebSocket(`ws://${window.location.host}`);
 let peer;
@@ -46,17 +46,9 @@ function handlerPeer(peer, socket) {
   })
 }
 
-function getSource() {
-  const path = window.location.pathname;
-
-  if (path !== '/') {
-    return path.replace('/', '');
-  }
-}
-
 function getParameters() {
   let parameters;
-  const source = getSource();
+  const source = window.SOURCE || null;
   const params = queryParameters();
 
   parameters = {
@@ -67,4 +59,16 @@ function getParameters() {
   if (source) parameters = Object.assign(parameters, { source });
 
   return parameters;
+}
+
+function launchFullscreen(element) {
+  if (element.requestFullscreen) {
+    element.requestFullscreen();
+  } else if (element.mozRequestFullScreen) {
+    element.mozRequestFullScreen();
+  } else if (element.webkitRequestFullscreen) {
+    element.webkitRequestFullscreen();
+  } else if (element.msRequestFullscreen) {
+    element.msRequestFullscreen();
+  }
 }

@@ -1,6 +1,7 @@
 import settingsDefault from './utils/settingsDefault';
 import { ipcMain } from 'electron';
 const Store = require('electron-store');
+const ejs = require('ejs');
 const http = require('http');
 const express = require('express');
 const path = require('path');
@@ -16,10 +17,11 @@ module.exports = function() {
 
   ipcMain.on('sources', (event, arg) => sources = arg);
 
-  app.use(express.static(__dirname + '/view'));
+  app.engine('html', ejs.renderFile);
+  app.use(express.static(__dirname + '/view/public'));
 
   app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname + '/view/index.html'))
+    res.render(path.join(__dirname + '/view/index.html'), { source: '' })
   });
 
   app.get('/sources', function (req, res) {
@@ -27,11 +29,19 @@ module.exports = function() {
   });
 
   app.get('/vr', function(req, res) {
-    res.sendFile(path.join(__dirname + '/view/vr.html'))
+    res.render(path.join(__dirname + '/view/vr.html'), { source: '' })
   })
 
-  app.get('/:id', function (req, res) {
-    res.sendFile(path.join(__dirname + '/view/index.html'))
+  app.get('/vr/:source', function (req, res) {
+    res.render(path.join(__dirname + '/view/vr.html'), {
+      source: req.params.source
+    })
+  })
+
+  app.get('/:source', function (req, res) {
+    res.render(path.join(__dirname + '/view/index.html'), {
+      source: req.params.source
+    })
   });
 
   wss.broadcast = function broadcast(data) {
