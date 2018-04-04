@@ -1,17 +1,22 @@
 import settingsDefault from './utils/settingsDefault';
 import { ipcMain } from 'electron';
 const Store = require('electron-store');
+const fs = require('fs');
 const ejs = require('ejs');
-const http = require('http');
+const https = require('https');
 const express = require('express');
 const path = require('path');
 const WebSocket = require('ws');
 const store = new Store({ defaults: settingsDefault });
+const credentials = {
+  key: fs.readFileSync('./key.pem'),
+  cert: fs.readFileSync('./cert.pem')
+}
 
 module.exports = function() {
   let sources;
   const app = express();
-  const server = http.createServer(app);
+  const server = https.createServer(credentials, app);
   const wss = new WebSocket.Server({ server, clientTracking: true });
   const { port } = store.get('server');
 

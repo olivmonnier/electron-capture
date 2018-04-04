@@ -1,7 +1,7 @@
 import Peer from 'simple-peer';
 import { queryParameters } from '../../utils/url';
 
-const ws = new WebSocket(`ws://${window.location.host}`);
+const ws = new WebSocket(`wss://${window.location.host}`);
 let peer;
 
 ws.addEventListener('open', onOpen)
