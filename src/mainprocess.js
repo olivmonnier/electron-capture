@@ -28,7 +28,17 @@ module.exports = function() {
     res.send({ sources });
   });
 
-  app.get('/vr', function(req, res) {
+  app.get('/ar', function(req, res) {
+    res.render(path.join(__dirname + '/view/ar.html'), { source: '' })
+  })
+
+  app.get('/ar/:source', function (req, res) {
+    res.render(path.join(__dirname + '/view/ar.html'), {
+      source: req.params.source
+    })
+  })
+
+  app.get('/vr', function (req, res) {
     res.render(path.join(__dirname + '/view/vr.html'), { source: '' })
   })
 
