@@ -14,5 +14,6 @@ export default {
   },
   server: {
     host: 'ws://127.0.0.1:8080'
-  }
+  },
+  channel: 'my room'
 }

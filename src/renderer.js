@@ -8,12 +8,20 @@ const ws = new WebSocket(store.get('server').host);
 
 let stream, peer;
 
-setInterval(function() {
-  getSources()
-    .then(sources => ipcRenderer.send('sources', sources));
-}, 3000)
+// setInterval(function() {
+//   getSources()
+//     .then(sources => ipcRenderer.send('sources', sources));
+// }, 3000)
 
+ws.addEventListener('open', onOpen);
 ws.addEventListener('message', onMessage);
+
+function onOpen() {
+  ws.send(JSON.stringify({
+    state: 'join',
+    room: store.get('channel')
+  }));
+}
 
 function onMessage(data) {
   console.log(data)
