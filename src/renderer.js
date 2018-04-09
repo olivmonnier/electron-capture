@@ -4,7 +4,7 @@ import { getSources, getUserMedia } from './utils/media';
 import settingsDefault from './utils/settingsDefault';
 const Store = require('electron-store');
 const store = new Store({ defaults: settingsDefault });
-const ws = new WebSocket(`ws://127.0.0.1:${store.get('server').port}`);
+const ws = new WebSocket(store.get('server').host);
 
 let stream, peer;
 

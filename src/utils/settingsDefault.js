@@ -13,6 +13,6 @@ export default {
     maxFrameRate: 60
   },
   server: {
-    port: 8080
+    host: 'wss://127.0.0.1:8080'
   }
 }
