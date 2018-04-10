@@ -1,9 +1,5 @@
 export default {
-  window: {
-    width: 800,
-    height: 600,
-    show: false
-  },
+  debugMod: false,
   rtc: {
     audio: false,
     maxHeight: 1200,
@@ -13,7 +9,7 @@ export default {
     maxFrameRate: 60
   },
   server: {
-    host: 'ws://127.0.0.1:8080'
+    host: 'http://127.0.0.1:8080'
   },
   channel: 'my room'
 }

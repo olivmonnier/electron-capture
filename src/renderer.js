@@ -10,7 +10,8 @@ const socket = io(store.get('server').host, {
   }
 });
 
-let stream, peer;
+let peers = {};
+let stream;
 
 socket.on('connect', onConnect);
 socket.on('message', onMessage);
@@ -20,20 +21,16 @@ function onConnect() {
 }
 
 function onMessage(data) {
-  console.log(data)
-  const { state, signal, params, source } = JSON.parse(data);
+  const { state, signal, source, peerId } = JSON.parse(data);
 
   if (state === 'ready') {
-    getUserMedia({ source, params })
+    getUserMedia({ source })
       .then(stream => {
-        if (peer && !peer.destroyed) {
-          peer.destroy();
-        }
-        peer = new SimplePeer({ initiator: true, stream });
-        handlerPeer(peer, socket);
+        peers[peerId] = new SimplePeer({ initiator: true, stream });
+        handlerPeer(peers[peerId], socket);
       })
   } else if (state === 'connect') {
-    peer.signal(signal)
+    peers[peerId].signal(signal)
   }
 }
 
@@ -49,6 +46,7 @@ function sendSources() {
 function handlerPeer(peer, socket) {
   peer.on('signal', signal => socket.emit('message', JSON.stringify({
     state: 'connect',
+    peerId: peer._id,
     signal
   })))
 
