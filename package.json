@@ -9,8 +9,7 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "eslint src --color",
-    "build": "webpack"
+    "lint": "eslint src --color"
   },
   "keywords": [],
   "author": "monnier",
@@ -48,19 +47,13 @@
     }
   },
   "dependencies": {
-    "aframe": "^0.8.1",
-    "ar.js": "^1.4.10",
-    "ejs": "^2.5.8",
     "electron-compile": "^6.4.2",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^1.3.0",
-    "express": "^4.16.3",
     "simple-peer": "^9.0.0",
-    "ws": "^5.1.0"
+    "socket.io-client": "^2.1.0"
   },
   "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.4",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
@@ -70,8 +63,6 @@
     "eslint-config-airbnb": "^15",
     "eslint-plugin-import": "^2",
     "eslint-plugin-jsx-a11y": "^5",
-    "eslint-plugin-react": "^7",
-    "webpack": "^4.3.0",
-    "webpack-cli": "^2.0.13"
+    "eslint-plugin-react": "^7"
   }
 }
