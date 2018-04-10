@@ -1,4 +1,3 @@
-import { ipcRenderer } from 'electron';
 import SimplePeer from 'simple-peer';
 import io from 'socket.io-client';
 import { getSources, getUserMedia } from './utils/media';
