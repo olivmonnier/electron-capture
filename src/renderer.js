@@ -16,14 +16,7 @@ socket.on('connect', onConnect);
 socket.on('message', onMessage);
 
 function onConnect() {
-  setInterval(function() {
-    getSources()
-      .then(sources => 
-        socket.emit('message', JSON.stringify({
-          state: 'sources',
-          sources
-        })));
-  }, 3000);
+  sendSources();
 }
 
 function onMessage(data) {
@@ -42,6 +35,15 @@ function onMessage(data) {
   } else if (state === 'connect') {
     peer.signal(signal)
   }
+}
+
+function sendSources() {
+  getSources()
+    .then(sources =>
+      socket.emit('message', JSON.stringify({
+        state: 'sources',
+        sources
+      })));
 }
 
 function handlerPeer(peer, socket) {
