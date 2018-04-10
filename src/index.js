@@ -17,9 +17,12 @@ let mainWindow;
 
 const createWindow = () => {
   // Create the browser window.
-  const windowConfig = Object.assign({}, store.get('window'), {
+  const windowConfig = {
+    width: 800,
+    height: 600,
+    show: store.get('debugMod'),
     icon: iconPath
-  });
+  };
   mainWindow = new BrowserWindow(windowConfig);
 
   // and load the index.html of the app.
