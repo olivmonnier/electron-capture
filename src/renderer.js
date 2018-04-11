@@ -13,14 +13,10 @@ const socket = io(store.get('server').host, {
 let peers = {};
 let stream;
 
-socket.on('connect', onConnect);
 socket.on('message', onMessage);
 
-function onConnect() {
-  setInterval(sendSources, 3000);
-}
-
 function onMessage(data) {
+  console.log(data)
   const { state, signal, source, peerId } = JSON.parse(data);
 
   if (state === 'ready') {
@@ -30,15 +26,18 @@ function onMessage(data) {
         handlerPeer(peers[peerId], socket);
       })
   } else if (state === 'connect') {
-    peers[peerId].signal(signal)
+    peers[peerId].signal(signal);
+  } else if (state === 'sources') {
+    sendSources(peerId);
   }
 }
 
-function sendSources() {
+function sendSources(peerId) {
   getSources()
     .then(sources =>
       socket.emit('message', JSON.stringify({
         state: 'sources',
+        peerId,
         sources
       })));
 }
