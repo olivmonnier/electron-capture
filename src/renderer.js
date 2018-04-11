@@ -17,7 +17,7 @@ socket.on('connect', onConnect);
 socket.on('message', onMessage);
 
 function onConnect() {
-  sendSources();
+  setInterval(sendSources, 3000);
 }
 
 function onMessage(data) {
@@ -46,7 +46,6 @@ function sendSources() {
 function handlerPeer(peer, socket) {
   peer.on('signal', signal => socket.emit('message', JSON.stringify({
     state: 'connect',
-    peerId: peer._id,
     signal
   })))
 
